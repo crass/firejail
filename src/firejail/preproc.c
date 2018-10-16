@@ -74,7 +74,9 @@ void preproc_build_firejail_dir(void) {
 	create_empty_dir_as_root(RUN_RO_DIR, S_IRUSR);
 
 	// bind-mount firejail binaries and helper programs
-	if (mount(LIBDIR, RUN_FIREJAIL_LIB_DIR, "none", MS_BIND, NULL) < 0)
+	if (access(PATH_FSECCOMP, X_OK) &&
+	    (access(LIBDIR, F_OK) ||
+	     mount(LIBDIR, RUN_FIREJAIL_LIB_DIR, "none", MS_BIND, NULL) < 0))
 		errExit("mounting " RUN_FIREJAIL_LIB_DIR);
 }
 
